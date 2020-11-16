@@ -18,7 +18,7 @@ class RateController
 
     public function get(): string
     {
-        $route = $this->request->getGet()['route'] ?? 'UAODS-CNSHA';
+        $route = $this->request->getGet()['route'] ?? null;
         $manager = new RateManager();
         $result = $manager->getByRoute($route);
 
