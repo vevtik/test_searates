@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/node_modules/handsontable/dist/handsontable.full.min.js"></script>
+    <link href="/node_modules/handsontable/dist/handsontable.full.min.css" rel="stylesheet" media="screen">
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+</head>
+<body>
+<div class="search">
+    <input id="search" type="text"/>
+</div>
+<div id="example1"></div>
+<script type="text/javascript">
+    let
+        container = $('#example1')[0],
+        hot;
+
+    hot = new Handsontable(container, {
+        colHeaders: ['ID', 'Route', 'Container', 'Rate', 'Currency'],
+        columns: [
+            {editor: false},
+            {editor: false},
+            {editor: false},
+            {editor: 'numeric'},
+            {editor: 'text'}
+        ],
+        startRows: 3,
+        startCols: 5,
+        hiddenColumns: {
+            columns: [0]
+        },
+        licenseKey: 'non-commercial-and-evaluation',
+        afterChange: function (change, source) {
+            if (source === 'loadData') {
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: "/api.php",
+                data: JSON.stringify({
+                    id: hot.getDataAtCell(change[0][0], 0),
+                    route: hot.getDataAtCell(change[0][0], 1),
+                    container: hot.getDataAtCell(change[0][0], 2),
+                    rate: hot.getDataAtCell(change[0][0], 3),
+                    currency: hot.getDataAtCell(change[0][0], 4),
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data){
+                    console.log('OK');
+                },
+                failure: function(errMsg) {
+                    console.log('Fail');
+                }
+            });
+        }
+    });
+    $.ajax({
+        type: "GET",
+        url: "/api.php",
+        success: function(data){
+            console.log('OK');
+            hot.loadData(
+                JSON.parse(data)
+            );
+        },
+        failure: function(errMsg) {
+            console.log('Fail');
+        }
+    });
+    $('#search').change(function() {
+        if (/^[A-Z]{5}-[A-Z]{5}$/.test(this.value)) {
+            $.ajax({
+                type: "GET",
+                url: '/api.php?route='.concat(this.value),
+                success: function(data){
+                    console.log('OK');
+                    hot.loadData(
+                        JSON.parse(data)
+                    );
+                },
+                failure: function(errMsg) {
+                    console.log('Fail');
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

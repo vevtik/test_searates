@@ -1,0 +1,16 @@
+{
+    "name": "vevtik/test_searates",
+    "description": "Searates test example",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "ext-json": "*",
+        "ext-pdo": "*",
+        "guzzlehttp/guzzle": "^7.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "app\\": "app/"
+        }
+    }
+}
