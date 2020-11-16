@@ -4,7 +4,7 @@ namespace app\lib;
 
 use app\entity\Port;
 use app\entity\Rate;
-use app\parser\CmaCgnParser;
+use app\parser\ParserInterface;
 use app\repository\PortRepository;
 use app\repository\RateRepository;
 use \InvalidArgumentException;
@@ -19,15 +19,9 @@ class RateManager
         } catch (InvalidArgumentException $e) {
             return [];
         }
-        $result = $this->getByPorts($portFrom, $portTo);
-        if (!empty($result)) {
-            return $result;
-        }
-        $this->parseRates($portFrom, $portTo);
 
         return $this->getByPorts($portFrom, $portTo);
     }
-
 
     /**
      * @param Port $portFrom
@@ -45,10 +39,8 @@ class RateManager
         ]);
     }
 
-    public function parseRates(Port $portFrom, Port $portTo)
+    public function parseRates(ParserInterface $parser, Port $portFrom, Port $portTo)
     {
-        $parser = new CmaCgnParser();
-
         $result = $parser->getRates($portFrom, $portTo);
         $this->saveRates($result);
 
