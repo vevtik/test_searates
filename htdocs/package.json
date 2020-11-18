@@ -1,0 +1,9 @@
+{
+  "name": "test_searates",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "handsontable": "8.2.0",
+    "jquery": "3.5.1"
+  }
+}
